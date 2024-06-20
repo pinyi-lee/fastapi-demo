@@ -4,7 +4,7 @@ from database.db import get_db_connection_pool
 from model.attraction import Attraction, AttractionListRes
 from model.error import ServiceError, AttractionNotFoundError, DBError
 
-def get_attraction_list(page , keyword = None) -> AttractionListRes | ServiceError:
+def get_attraction_list(page: int, keyword: str = None) -> AttractionListRes | ServiceError:
     connection = None
     cursor = None
     
@@ -14,7 +14,7 @@ def get_attraction_list(page , keyword = None) -> AttractionListRes | ServiceErr
     
         if keyword:
             count_sql = "SELECT COUNT(*) as total from location where name LIKE %s OR MRT = %s"
-            cursor.execute(count_sql , ('%' + keyword + '%' , keyword ))
+            cursor.execute(count_sql, ('%' + keyword + '%' , keyword ))
         else:
             count_sql = "SELECT COUNT(*) as total from location"
             cursor.execute(count_sql)
@@ -24,10 +24,10 @@ def get_attraction_list(page , keyword = None) -> AttractionListRes | ServiceErr
 
         if keyword:
             sql = "select id, name, category, description, address, transport,  mrt, CAST(lat AS DOUBLE) AS lat, CAST(lng AS DOUBLE) AS lng from location where name LIKE %s OR MRT = %s LIMIT 12 OFFSET %s"
-            cursor.execute(sql , ('%' + keyword + '%' , keyword  , offset))
+            cursor.execute(sql, ('%' + keyword + '%' , keyword, offset))
         else:
             sql = "select id, name, category, description, address, transport, mrt, CAST(lat AS DOUBLE) AS lat, CAST(lng AS DOUBLE) AS lng from location LIMIT 12 OFFSET %s"
-            cursor.execute(sql , (offset))
+            cursor.execute(sql, (offset))
         
         locations = cursor.fetchall()
 
@@ -35,7 +35,13 @@ def get_attraction_list(page , keyword = None) -> AttractionListRes | ServiceErr
         for location in locations:
             location_ids.append(location['id'])
 
-        image_sql = "select location_id, images FROM URL_file where location_id IN ({format_string})"
+        if not location_ids:
+            return AttractionListRes(
+                nextPage = None,
+                data = [])
+
+        format_string = ','.join(["%s"] * len(location_ids))
+        image_sql = f"select location_id, images FROM URL_file where location_id IN ({format_string})"
         cursor.execute(image_sql , tuple(location_ids))
         image_results = cursor.fetchall()
 
@@ -91,16 +97,16 @@ def get_attraction(id: int) -> Attraction | ServiceError:
         cursor = connection.cursor(pymysql.cursors.DictCursor)
 
         sql = "select id, name, category, description, address, transport, mrt, CAST(lat AS DOUBLE) AS lat, CAST(lng AS DOUBLE) AS lng from location where id = %s"
-        cursor.execute(sql ,(id, ))
+        cursor.execute(sql, (id, ))
         result = cursor.fetchone()
 
-        if result == None | len(result) == 0:
+        if result == None or len(result) == 0:
             return AttractionNotFoundError()
         
         image_urls = []
         if result:
             image_sql = "select images from URL_file where location_id = %s"
-            cursor.execute(image_sql , (id, ))
+            cursor.execute(image_sql, (id, ))
             results = cursor.fetchall()
             image_urls = [result["images"] for result in results]
         
