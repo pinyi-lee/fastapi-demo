@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Query, Path
+import pickle
 
+from service.cache import get_redis as redis
 from service.service import bindResponse
 from database.attraction import get_attraction_list as get_attraction_list_from_db
 from database.attraction import get_attraction as get_attraction_from_db
@@ -21,11 +23,13 @@ async def get_attraction_list(
     keyword: str = Query(None, description = "用來完全比對捷運站名稱、或模糊比對景點名稱的關鍵字，沒有給定則不做篩選")
 ) -> AttractionListRes | ServiceError:
     try:
-        res = get_attraction_list_from_db(page, keyword)
-        if isinstance(res, ServiceError):
-            return bindResponse(res)
-
-        return bindResponse(res)
+        cache_key = f'attraction_list:{page}:{keyword}'
+        cached_data = redis().get(cache_key)
+        if cached_data:
+            return bindResponse(pickle.loads(cached_data))
+        data = get_attraction_list_from_db(page, keyword)
+        redis().setex(cache_key, 3600, pickle.dumps(data))
+        return bindResponse(data)
         
     except Exception as e:
         print("get attraction list serivce error, error message:" , e)
@@ -45,11 +49,13 @@ async def get_attraction(
     attractionId: int = Path(..., description = "景點編號")
 ) -> AttractionRes | ServiceError:
     try:
-        res = get_attraction_from_db(attractionId)
-        if isinstance(res, ServiceError):
-            return bindResponse(res)
-
-        return bindResponse(res)
+        cache_key = f'attraction:{attractionId}'
+        cached_data = redis().get(cache_key)
+        if cached_data:
+            return bindResponse(pickle.loads(cached_data))
+        data = get_attraction_from_db(attractionId)
+        redis().setex(cache_key, 3600, pickle.dumps(data))
+        return bindResponse(data)
         
     except Exception as e:
         print("get attraction serivce error, error message:" , e)
