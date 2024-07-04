@@ -52,10 +52,14 @@ async def get_attraction(
         cache_key = f'attraction:{attractionId}'
         cached_data = redis().get(cache_key)
         if cached_data:
-            return bindResponse(pickle.loads(cached_data))
+            return bindResponse(AttractionRes(data = pickle.loads(cached_data)))
+            
         data = get_attraction_from_db(attractionId)
+        if isinstance(data, ServiceError):
+            return bindResponse(data)
+        
         redis().setex(cache_key, 3600, pickle.dumps(data))
-        return bindResponse(data)
+        return bindResponse(AttractionRes(data = data))
         
     except Exception as e:
         print("get attraction serivce error, error message:" , e)
