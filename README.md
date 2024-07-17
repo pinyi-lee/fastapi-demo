@@ -4,7 +4,7 @@ cd app
 python3 -m venv venv
 source venv/bin/activate
 pip3 install --upgrade pip
-pip3 install -r build/requirements.txt
+pip3 install -r ../build/requirements.txt
 
 //進入環境設置
 python3 -m venv venv
