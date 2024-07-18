@@ -1,16 +1,33 @@
-cd app
+# Fastapi Service
+## Docker Run
 
-//初始化環境設置
-python3 -m venv venv
-source venv/bin/activate
-pip3 install --upgrade pip
-pip3 install -r ../build/requirements.txt
+### build docker
+* make docker
 
-//進入環境設置
-python3 -m venv venv
+### start service
+* make start
 
-//開啟專案
-uvicorn main:app --reload
+### stop service
+* make stop
 
-//離開環境設置
+## VENV
+
+### init
+* cd app
+* python3 -m venv venv
+* source venv/bin/activate
+* pip3 install --upgrade pip
+* pip3 install -r ../build/requirements.txt
+
+### add plug-in
+* cd app
+* source venv/bin/activate
+* pip3 install xyz
+
+### export plug-in list
+* pip freeze > requirements.txt
+
+### exit
 deactivate
+
+
