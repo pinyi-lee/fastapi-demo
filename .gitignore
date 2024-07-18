@@ -4,3 +4,6 @@
 
 # Ignore virtual environment
 /app/venv/
+
+# Ignore Dockerfile
+/build/Dockerfile
