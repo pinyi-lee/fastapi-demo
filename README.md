@@ -17,7 +17,7 @@ Set up and run the FastAPI service in your local environment.
 
 #### run
 - cd app
-- uvicorn main:app --reload
+- uvicorn app.main:app --reload
 
 #### test
 - http://localhost:8000/docs

@@ -2,8 +2,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 import logging
 
-logging.basicConfig()
-logging.getLogger('apscheduler').setLevel(logging.INFO)
+from app.util.logger import LoggerManager
+from app.util.config import ConfigManager
 
 class SchedulerManager:
     _scheduler_instance = None
@@ -14,7 +14,7 @@ class SchedulerManager:
             if cls._scheduler_instance is None:
                 cls._scheduler_instance = BackgroundScheduler()
                 cls._scheduler_instance.start()
-                cls._scheduler_instance.add_job(my_scheduled_job, IntervalTrigger(seconds=30))
+                cls._scheduler_instance.add_job(my_scheduled_job, IntervalTrigger(seconds=ConfigManager.get_config().scheduler_interval_seconds))
         except Exception as e:
                 raise RuntimeError(f"Init Scheduler Fail, Error: {e}")
 
@@ -24,4 +24,4 @@ class SchedulerManager:
             cls._scheduler_instance.shutdown()
 
 def my_scheduled_job():
-    print("This job is run.")
+    LoggerManager.error("This job is run.")

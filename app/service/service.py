@@ -1,7 +1,7 @@
 from fastapi import status
 from fastapi.responses import JSONResponse
 
-from model.error import ServiceError
+from app.model.error import ServiceError
 
 def bindResponse(data):
 

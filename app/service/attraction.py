@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Query, Path
 import pickle
 
-from service.cache import RedisManager
-from service.service import bindResponse
-from database.attraction import get_attraction_list as get_attraction_list_from_db
-from database.attraction import get_attraction as get_attraction_from_db
-from model.attraction import AttractionListRes, AttractionRes
-from model.error import ServiceError, AttractionIDError, AttractionNotFoundError, DBError, InternalServerError
+from app.service.cache import RedisManager
+from app.service.service import bindResponse
+from app.database.attraction import get_attraction_list as get_attraction_list_from_db
+from app.database.attraction import get_attraction as get_attraction_from_db
+from app.model.attraction import AttractionListRes, AttractionRes
+from app.model.error import ServiceError, AttractionIDError, AttractionNotFoundError, DBError, InternalServerError
+from app.util.logger import LoggerManager
 
 router = APIRouter()
 
@@ -32,7 +33,7 @@ async def get_attraction_list(
         return bindResponse(data)
         
     except Exception as e:
-        print("get attraction list serivce error, error message:" , e)
+        LoggerManager.error("get attraction list serivce error, error message:" , e)
         return bindResponse(InternalServerError())
 
 @router.get("/api/attraction/{attractionId}",
@@ -62,5 +63,5 @@ async def get_attraction(
         return bindResponse(AttractionRes(data = data))
         
     except Exception as e:
-        print("get attraction serivce error, error message:" , e)
+        LoggerManager.error("get attraction serivce error, error message:" , e)
         return bindResponse(InternalServerError())

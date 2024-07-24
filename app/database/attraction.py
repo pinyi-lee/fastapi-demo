@@ -1,8 +1,9 @@
 import pymysql
 
-from database.db import DBManager
-from model.attraction import Attraction, AttractionListRes
-from model.error import ServiceError, AttractionNotFoundError, DBError
+from app.database.db import DBManager
+from app.model.attraction import Attraction, AttractionListRes
+from app.model.error import ServiceError, AttractionNotFoundError, DBError
+from app.util.logger import LoggerManager
 
 def get_attraction_list(page: int, keyword: str = None) -> AttractionListRes | ServiceError:
     connection = None
@@ -79,7 +80,7 @@ def get_attraction_list(page: int, keyword: str = None) -> AttractionListRes | S
         )
             
     except Exception as e:
-        print("get attraction list database error, error message:" , e)
+        LoggerManager.error("get attraction list database error, error message:" , e)
         return DBError()
     
     finally:
@@ -124,7 +125,7 @@ def get_attraction(id: int) -> Attraction | ServiceError:
         )
     
     except Exception as e:
-        print("get attraction database error, error message:" , e)
+        LoggerManager.error("get attraction database error, error message:" , e)
         return DBError()
     
     finally:

@@ -1,6 +1,6 @@
 import redis
 
-from config.config import ConfigManager
+from app.util.config import ConfigManager
 
 class RedisManager:
     _redis_instance = None

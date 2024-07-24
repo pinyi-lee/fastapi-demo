@@ -2,6 +2,10 @@ from pydantic_settings import BaseSettings
 from pydantic import Field
 
 class Settings(BaseSettings):
+    logger_level: str = Field(..., json_schema_extra={"env": "LOGGER_LEVEL"})
+    logger_path: str = Field(..., json_schema_extra={"env": ":LOGGER_PATH"})
+    scheduler_interval_seconds: int = Field(..., json_schema_extra={"env": ":SCHEDULER_INTERVAL_SECONDS"})
+    database_name: str = Field(..., json_schema_extra={"env": "DATABASE_NAME"})
     database_user: str = Field(..., json_schema_extra={"env": "DATABASE_USER"})
     database_password: str = Field(..., json_schema_extra={"env": "DATABASE_PASSWORD"})
     database_host: str = Field(..., json_schema_extra={"env": "DATABASE_HOST"})
@@ -10,7 +14,7 @@ class Settings(BaseSettings):
     redis_port: int = Field(..., json_schema_extra={"env": "REDIS_PORT"})
 
     class Config:
-        env_file = ".env"
+        env_file = "app/.env"
 
     def validate_env_variables(self) -> str | None:
         missing_vars = []

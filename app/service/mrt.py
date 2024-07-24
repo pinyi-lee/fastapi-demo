@@ -1,11 +1,12 @@
 from fastapi import APIRouter, status
 import pickle
 
-from service.cache import RedisManager
-from service.service import bindResponse
-from database.mrt import get_mrt_list as get_mrt_list_from_db
-from model.mrt import MRTListRes
-from model.error import ServiceError, DBError, InternalServerError
+from app.service.cache import RedisManager
+from app.service.service import bindResponse
+from app.database.mrt import get_mrt_list as get_mrt_list_from_db
+from app.model.mrt import MRTListRes
+from app.model.error import ServiceError, DBError, InternalServerError
+from app.util.logger import LoggerManager
 
 router = APIRouter()
 
@@ -31,5 +32,5 @@ async def get_mrt_list() -> MRTListRes | ServiceError:
         return bindResponse(MRTListRes(data = data))
         
     except Exception as e:
-        print("get mrt list serivce error, error message:" , e)
+        LoggerManager.error("get mrt list serivce error, error message:" , e)
         return bindResponse(InternalServerError())

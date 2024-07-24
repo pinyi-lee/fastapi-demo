@@ -1,8 +1,9 @@
 import pymysql
 from typing import List
 
-from database.db import DBManager
-from model.error import ServiceError, DBError
+from app.database.db import DBManager
+from app.model.error import ServiceError, DBError
+from app.util.logger import LoggerManager
 
 def get_mrt_list() -> List[str] | ServiceError:
     connection = None
@@ -20,7 +21,7 @@ def get_mrt_list() -> List[str] | ServiceError:
         return mrt_list
         
     except Exception as e:
-        print("get mrt list database error, error message:" , e)
+        LoggerManager.error("get mrt list database error, error message:" , e)
         return DBError()
     
     finally:

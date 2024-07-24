@@ -1,7 +1,8 @@
 from dbutils.pooled_db import PooledDB
 import pymysql
 
-from config.config import ConfigManager
+from app.util.config import ConfigManager
+from app.util.logger import LoggerManager
 
 class DBManager:
     _db_instance = None
@@ -13,7 +14,7 @@ class DBManager:
                 cls._db_instance = PooledDB(
                                         creator = pymysql,
                                         maxconnections = 3,
-                                        database = "taipei_day_trip",
+                                        database = ConfigManager.get_config().database_name,
                                         user = ConfigManager.get_config().database_user,
                                         password = ConfigManager.get_config().database_password,
                                         host = ConfigManager.get_config().database_host,
@@ -27,10 +28,10 @@ class DBManager:
     def get_db(cls) -> pymysql.Connection:
         try:
             connetion = cls._db_instance.connection()
-            print("Database connect successful")
+            LoggerManager.debug("Database connect successful")
             return connetion
         except Exception as e:
-            print("Database connect failed :", e)
+            LoggerManager.error("Database connect failed :", e)
         
     @classmethod
     def close_db(cls) -> None:
