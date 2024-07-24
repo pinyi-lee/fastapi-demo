@@ -1,7 +1,7 @@
 import pymysql
 from typing import List
 
-from database.db import get_db_connection_pool
+from database.db import DBManager
 from model.error import ServiceError, DBError
 
 def get_mrt_list() -> List[str] | ServiceError:
@@ -9,7 +9,7 @@ def get_mrt_list() -> List[str] | ServiceError:
     cursor = None
     
     try:
-        connection = get_db_connection_pool()
+        connection = DBManager.get_db()
         cursor = connection.cursor(pymysql.cursors.DictCursor)
 
         sql = "select mrt from location where mrt is not null group by mrt order by count(*) DESC;"

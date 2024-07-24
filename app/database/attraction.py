@@ -1,6 +1,6 @@
 import pymysql
 
-from database.db import get_db_connection_pool
+from database.db import DBManager
 from model.attraction import Attraction, AttractionListRes
 from model.error import ServiceError, AttractionNotFoundError, DBError
 
@@ -9,7 +9,7 @@ def get_attraction_list(page: int, keyword: str = None) -> AttractionListRes | S
     cursor = None
     
     try:
-        connection = get_db_connection_pool()
+        connection = DBManager.get_db()
         cursor = connection.cursor(pymysql.cursors.DictCursor)
     
         if keyword:
@@ -93,7 +93,7 @@ def get_attraction(id: int) -> Attraction | ServiceError:
     cursor = None
     
     try:
-        connection = get_db_connection_pool()
+        connection = DBManager.get_db()
         cursor = connection.cursor(pymysql.cursors.DictCursor)
 
         sql = "select id, name, category, description, address, transport, mrt, CAST(lat AS DOUBLE) AS lat, CAST(lng AS DOUBLE) AS lng from location where id = %s"

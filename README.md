@@ -1,33 +1,55 @@
 # Fastapi Service
+
+---
+## Python Run
+Set up and run the FastAPI service in your local environment. 
+> This process involves creating a virtual environment, installing dependencies, and starting the FastAPI service.
+
+#### init env
+- python3 -m venv app/venv
+- source app/venv/bin/activate
+- pip3 install --upgrade pip
+- pip3 install --no-cache-dir -r build/requirements.txt
+
+#### prepare dependencies
+- redis
+- mysql
+
+#### run
+- cd app
+- uvicorn main:app --reload
+
+#### test
+- http://localhost:8000/docs
+
+---
 ## Docker Run
+Use Docker to build and run FastAPI services. 
+> Docker provides an isolated environment for running your application, ensuring consistent behavior regardless of local environment differences.
 
-### build docker
-* make docker
+#### build docker
+- make docker
 
-### start service
-* make start
+#### start service
+- make start
 
-### stop service
-* make stop
+#### stop service
+- make stop
 
+#### test
+- http://localhost:80/docs
+
+---
 ## VENV
+venv is a built-in Python module for creating virtual environments.
+> A virtual environment is an isolated Python environment that allows you to manage dependencies for each project independently, without affecting the global Python environment.
 
-### init
-* cd app
-* python3 -m venv venv
-* source venv/bin/activate
-* pip3 install --upgrade pip
-* pip3 install -r ../build/requirements.txt
+#### add plug-in
+- source app/venv/bin/activate
+- pip3 install xyz
 
-### add plug-in
-* cd app
-* source venv/bin/activate
-* pip3 install xyz
+#### export plug-in list
+- pip3 freeze > build/requirements.txt
 
-### export plug-in list
-* pip freeze > requirements.txt
-
-### exit
-deactivate
-
-
+#### exit
+- deactivate

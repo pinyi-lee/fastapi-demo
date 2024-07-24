@@ -8,24 +8,38 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
 
   mysql:
     image: mysql:latest
     container_name: mysql
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: taipei_day_trip
       MYSQL_USER: test
       MYSQL_PASSWORD: test
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
 
   fastapi_service:
     image: fastapi_service
     container_name: fastapi_service
+    ports:
+      - "8000"
     environment:
       DATABASE_USER: test
       DATABASE_PASSWORD: test
@@ -33,11 +47,11 @@ services:
       DATABASE_PORT: 3306
       REDIS_HOST: redis
       REDIS_PORT: 6379
-    ports:
-      - "8000"
     depends_on:
-      - redis
-      - mysql
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   nginx:
     image: nginx:latest

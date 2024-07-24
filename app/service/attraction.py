@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, Path
 import pickle
 
-from service.cache import get_redis as redis
+from service.cache import RedisManager
 from service.service import bindResponse
 from database.attraction import get_attraction_list as get_attraction_list_from_db
 from database.attraction import get_attraction as get_attraction_from_db
@@ -24,11 +24,11 @@ async def get_attraction_list(
 ) -> AttractionListRes | ServiceError:
     try:
         cache_key = f'attraction_list:{page}:{keyword}'
-        cached_data = redis().get(cache_key)
+        cached_data = RedisManager.get_redis().get(cache_key)
         if cached_data:
             return bindResponse(pickle.loads(cached_data))
         data = get_attraction_list_from_db(page, keyword)
-        redis().setex(cache_key, 3600, pickle.dumps(data))
+        RedisManager.get_redis().setex(cache_key, 3600, pickle.dumps(data))
         return bindResponse(data)
         
     except Exception as e:
@@ -50,7 +50,7 @@ async def get_attraction(
 ) -> AttractionRes | ServiceError:
     try:
         cache_key = f'attraction:{attractionId}'
-        cached_data = redis().get(cache_key)
+        cached_data = RedisManager.get_redis().get(cache_key)
         if cached_data:
             return bindResponse(AttractionRes(data = pickle.loads(cached_data)))
             
@@ -58,7 +58,7 @@ async def get_attraction(
         if isinstance(data, ServiceError):
             return bindResponse(data)
         
-        redis().setex(cache_key, 3600, pickle.dumps(data))
+        RedisManager.get_redis().setex(cache_key, 3600, pickle.dumps(data))
         return bindResponse(AttractionRes(data = data))
         
     except Exception as e:

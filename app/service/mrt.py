@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 import pickle
 
-from service.cache import get_redis as redis
+from service.cache import RedisManager
 from service.service import bindResponse
 from database.mrt import get_mrt_list as get_mrt_list_from_db
 from model.mrt import MRTListRes
@@ -20,11 +20,14 @@ router = APIRouter()
 async def get_mrt_list() -> MRTListRes | ServiceError:
     try:
         cache_key = f'mrt_list'
-        cached_data = redis().get(cache_key)
+        cached_data = RedisManager.get_redis().get(cache_key)
         if cached_data:
             return bindResponse(MRTListRes(data =pickle.loads(cached_data)))
+        
         data = get_mrt_list_from_db()
-        redis().setex(cache_key, 3600, pickle.dumps(data))
+
+        ## 如果 error 要不存
+        RedisManager.get_redis().setex(cache_key, 3600, pickle.dumps(data))
         return bindResponse(MRTListRes(data = data))
         
     except Exception as e:
