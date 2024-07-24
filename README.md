@@ -15,8 +15,10 @@ Set up and run the FastAPI service in your local environment.
 - redis
 - mysql
 
+#### init db (first time only)
+- make init_db
+
 #### run
-- cd app
 - uvicorn app.main:app --reload
 
 #### test
@@ -29,6 +31,9 @@ Use Docker to build and run FastAPI services.
 
 #### build docker
 - make docker
+
+#### init db (first time only)
+- make init_db
 
 #### start service
 - make start
@@ -53,3 +58,9 @@ venv is a built-in Python module for creating virtual environments.
 
 #### exit
 - deactivate
+
+---
+## Test Run
+
+#### test
+- make check

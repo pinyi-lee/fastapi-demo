@@ -80,7 +80,7 @@ def get_attraction_list(page: int, keyword: str = None) -> AttractionListRes | S
         )
             
     except Exception as e:
-        LoggerManager.error("get attraction list database error, error message:" , e)
+        LoggerManager.error(f"get attraction list database error, error message:{e}")
         return DBError()
     
     finally:
@@ -125,7 +125,7 @@ def get_attraction(id: int) -> Attraction | ServiceError:
         )
     
     except Exception as e:
-        LoggerManager.error("get attraction database error, error message:" , e)
+        LoggerManager.error(f"get attraction database error, error message:{e}")
         return DBError()
     
     finally:

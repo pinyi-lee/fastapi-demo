@@ -33,7 +33,7 @@ async def get_attraction_list(
         return bindResponse(data)
         
     except Exception as e:
-        LoggerManager.error("get attraction list serivce error, error message:" , e)
+        LoggerManager.error(f"get attraction list serivce error, error message:{e}")
         return bindResponse(InternalServerError())
 
 @router.get("/api/attraction/{attractionId}",
@@ -63,5 +63,5 @@ async def get_attraction(
         return bindResponse(AttractionRes(data = data))
         
     except Exception as e:
-        LoggerManager.error("get attraction serivce error, error message:" , e)
+        LoggerManager.error(f"get attraction serivce error, error message:{e}")
         return bindResponse(InternalServerError())

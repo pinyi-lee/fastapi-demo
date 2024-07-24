@@ -5,7 +5,9 @@ db =  pymysql.connect(
     port = 3306,
     user = "test",
     password = "test",
-    db = "taipei_day_trip"
+    db = "taipei_day_trip",
+    connect_timeout=10,  # 連接超時
+    read_timeout=10      # 讀取超時
 )
 
 cursor = db.cursor()

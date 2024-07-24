@@ -22,7 +22,7 @@ insert ignore into URL_file( location_id , images) values(%s,%s)
 
 if __name__ == '__main__':
     try:
-        with open('taipei-attractions.json') as data_details:
+        with open('script/taipei-attractions.json') as data_details:
             data = json.load(data_details)
         data_results = data["result"]["results"]
 

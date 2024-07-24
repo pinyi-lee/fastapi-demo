@@ -31,7 +31,7 @@ class DBManager:
             LoggerManager.debug("Database connect successful")
             return connetion
         except Exception as e:
-            LoggerManager.error("Database connect failed :", e)
+            LoggerManager.error(f"Database connect failed :{e}")
         
     @classmethod
     def close_db(cls) -> None:

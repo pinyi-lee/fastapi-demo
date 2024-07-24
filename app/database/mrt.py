@@ -21,7 +21,7 @@ def get_mrt_list() -> List[str] | ServiceError:
         return mrt_list
         
     except Exception as e:
-        LoggerManager.error("get mrt list database error, error message:" , e)
+        LoggerManager.error(f"get mrt list database error, error message:{e}")
         return DBError()
     
     finally:

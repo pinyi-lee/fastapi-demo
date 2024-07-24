@@ -32,5 +32,5 @@ async def get_mrt_list() -> MRTListRes | ServiceError:
         return bindResponse(MRTListRes(data = data))
         
     except Exception as e:
-        LoggerManager.error("get mrt list serivce error, error message:" , e)
+        LoggerManager.error(f"get mrt list serivce error, error message:{e}")
         return bindResponse(InternalServerError())

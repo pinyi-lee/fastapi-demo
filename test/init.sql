@@ -1,0 +1,4 @@
+CREATE DATABASE IF NOT EXISTS taipei_day_trip;
+CREATE USER IF NOT EXISTS 'test'@'%' IDENTIFIED BY 'test';
+GRANT ALL PRIVILEGES ON taipei_day_trip.* TO 'test'@'%';
+FLUSH PRIVILEGES;
