@@ -1,6 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-import logging
 
 from app.util.logger import LoggerManager
 from app.util.config import ConfigManager

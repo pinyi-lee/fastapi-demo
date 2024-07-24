@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     database_port: int = Field(..., json_schema_extra={"env": "DATABASE_PORT"})
     redis_host: str = Field(..., json_schema_extra={"env": "REDIS_HOST"})
     redis_port: int = Field(..., json_schema_extra={"env": "REDIS_PORT"})
+    aws_access_key_id : str = Field(..., json_schema_extra={"env": "AWS_ACCESS_KEY_ID"})
+    aws_secret_access_key: str = Field(..., json_schema_extra={"env": "AWS_SECRET_ACCESS_KEY"})
+    aws_region: str = Field(..., json_schema_extra={"env": "AWS_REGION"})
+    bucket_name: str = Field(..., json_schema_extra={"env": "BUCKET_NAME"})
 
     class Config:
         env_file = "app/.env"

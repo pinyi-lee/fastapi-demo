@@ -40,6 +40,8 @@ services:
     container_name: fastapi_service
     ports:
       - "8000"
+    volumes:
+      - ../app:/app
     environment:
       DATABASE_USER: test
       DATABASE_PASSWORD: test

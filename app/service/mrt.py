@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter
 import pickle
 
 from app.service.cache import RedisManager
