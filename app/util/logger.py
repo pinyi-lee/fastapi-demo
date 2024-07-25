@@ -9,7 +9,7 @@ from app.util.config import ConfigManager
 class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self , request , call_next):
 
-        if request.url.path.startswith('/api'):
+        if request.url.path.startswith('/api') and not request.url.path.startswith('/api/notification/stream/') :
             short_id = uuid.uuid4().hex[:8]
             request_body = await request.body()
             

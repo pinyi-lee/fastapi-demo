@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from app.model.error import ServiceError
 
-def bindResponse(data):
+def bindResponse(data) -> JSONResponse:
 
     if not isinstance(data, ServiceError):
         return JSONResponse(

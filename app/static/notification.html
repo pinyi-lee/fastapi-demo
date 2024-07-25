@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE with FastAPI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            margin-bottom: 20px;
+        }
+        .messages {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 200px;
+            overflow-y: scroll;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label for="user_id">Your User ID:</label>
+        <input type="text" id="user_id">
+        <button onclick="startListening()">Start Listening</button>
+    </div>
+
+    <div class="container">
+        <label for="friend_id">Friend's User ID:</label>
+        <input type="text" id="friend_id">
+        <button onclick="sendMessage()">Send Message</button>
+    </div>
+
+    <div class="container">
+        <h3>Messages</h3>
+        <div class="messages" id="messages"></div>
+    </div>
+
+    <script>
+        let eventSource;
+
+        function startListening() {
+            const userId = document.getElementById('user_id').value;
+            if (!userId) {
+                alert('Please enter your User ID');
+                return;
+            }
+
+            if (eventSource) {
+                eventSource.close();
+            }
+
+            eventSource = new EventSource(`/api/notification/stream/${userId}`);
+            eventSource.onopen = () => {
+                console.log('EventSource connected')
+            }
+
+            eventSource.addEventListener('message', function (event) {
+                console.log('message', event.data);
+
+                const messagesDiv = document.getElementById('messages');
+                const newMessage = document.createElement('div');
+                newMessage.textContent = event.data;
+                messagesDiv.appendChild(newMessage);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+
+            eventSource.onerror = (error) => {
+                console.error('EventSource failed', error)
+                eventSource.close()
+            }
+        }
+
+        async function sendMessage() {
+            const userId = document.getElementById('user_id').value;
+            const friendId = document.getElementById('friend_id').value;
+            if (!userId || !friendId) {
+                alert('Please enter both your User ID and your friend\'s User ID');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/notification/publish/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ friend_id: friendId })
+                });
+
+                if (response.ok) {
+                    alert('Message sent successfully');
+                } else {
+                    alert('Failed to send message');
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Error sending message');
+            }
+        }
+    </script>
+</body>
+</html>

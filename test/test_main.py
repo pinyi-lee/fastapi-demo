@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
     ConfigManager.init_config()
     LoggerManager.init_logger()
     DBManager.init_db()
-    RedisManager.init_redis()
+    await RedisManager.init_redis()
     #SchedulerManager.init_scheduler()
    
     yield
@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     ConfigManager.close_config()
     LoggerManager.close_logger()
     DBManager.close_db()
-    RedisManager.close_redis()
+    await RedisManager.close_redis()
     #SchedulerManager.close_scheduler()
 
 app = FastAPI(lifespan=lifespan)
