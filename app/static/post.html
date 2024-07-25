@@ -1,0 +1,53 @@
+<html>
+        <head>
+            <title>Upload to S3</title>
+        </head>
+        <body>
+            <h1>Upload Image to S3</h1>
+            <form id="upload-form">
+                <input type="file" id="file-input" name="file" accept="image/*">
+                <button type="button" onclick="uploadFile()">Upload</button>
+            </form>
+            <script>
+                async function uploadFile() {
+                    const fileInput = document.getElementById('file-input');
+                    const file = fileInput.files[0];
+                    if (!file) {
+                        alert('Please select a file');
+                        return;
+                    }
+
+                    const response = await fetch('/api/post/presigned_url', {
+                        method: 'POST',
+                    });
+                    const data = await response.json();
+                    const presignedUrl = data.url;
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('PUT', presignedUrl, true);
+                    xhr.setRequestHeader('Content-Type', file.type);
+
+                    xhr.upload.onprogress = function(e) {
+                        if (e.lengthComputable) {
+                            const percentComplete = (e.loaded / e.total) * 100;
+                            console.log(percentComplete + '% uploaded');
+                        }
+                    };
+
+                    xhr.onload = function() {
+                        if (xhr.status == 200) {
+                            alert('File uploaded successfully');
+                        } else {
+                            alert('File upload failed');
+                        }
+                    };
+
+                    xhr.onerror = function() {
+                        alert('File upload failed');
+                    };
+
+                    xhr.send(file);
+                }
+            </script>
+        </body>
+    </html>
