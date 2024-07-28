@@ -6,6 +6,10 @@ class PublishRequest(BaseModel):
     
     @field_validator('friend_id')
     def validate_user_id(cls, value):
-        if not isinstance(value, UUID):
+        try:
+            uuid_obj = UUID(value, version=4)
+            if str(uuid_obj) == value:
+                return value
             raise ValueError(f"{value} is not a valid UUID")
-        return value
+        except ValueError:
+            raise ValueError(f"{value} is not a valid UUID")
