@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Query, Path
 import pickle
 
-from app.service.cache import RedisManager
+from app.manager.cache import RedisManager
 from app.service.service import bindResponse
 from app.database.attraction import get_attraction_list as get_attraction_list_from_db
 from app.database.attraction import get_attraction as get_attraction_from_db
 from app.model.attraction import AttractionListRes, AttractionRes
 from app.model.error import ServiceError, AttractionIDError, AttractionNotFoundError, DBError, InternalServerError
-from app.util.logger import LoggerManager
+from app.manager.logger import LoggerManager
 
 router = APIRouter()
 

@@ -4,10 +4,10 @@ import uuid
 
 from app.service.service import bindResponse
 from app.model.error import ServiceError, InternalServerError
-from app.service.s3 import s3Manager
+from app.manager.s3 import s3Manager
 from app.model.post import PresignedUrlRes
-from app.util.config import ConfigManager
-from app.util.logger import LoggerManager
+from app.manager.config import ConfigManager
+from app.manager.logger import LoggerManager
 
 router = APIRouter()
 

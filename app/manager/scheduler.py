@@ -1,8 +1,8 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from app.util.logger import LoggerManager
-from app.util.config import ConfigManager
+from app.manager.logger import LoggerManager
+from app.manager.config import ConfigManager
 
 class SchedulerManager:
     _scheduler_instance = None

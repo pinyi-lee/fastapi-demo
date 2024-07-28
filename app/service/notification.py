@@ -8,8 +8,8 @@ import aioredis
 from app.service.service import bindResponse
 from app.model.error import InternalServerError
 from app.model.notification import PublishRequest
-from app.util.logger import LoggerManager
-from app.service.cache import RedisManager
+from app.manager.logger import LoggerManager
+from app.manager.cache import RedisManager
 
 router = APIRouter()
     

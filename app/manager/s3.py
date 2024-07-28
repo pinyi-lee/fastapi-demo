@@ -1,6 +1,6 @@
 import boto3
 
-from app.util.config import ConfigManager
+from app.manager.config import ConfigManager
 from botocore.config import Config
 
 class s3Manager:

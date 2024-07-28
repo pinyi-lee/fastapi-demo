@@ -1,6 +1,6 @@
 import aioredis
 
-from app.util.config import ConfigManager
+from app.manager.config import ConfigManager
 
 class RedisManager:
     _redis_instance = None

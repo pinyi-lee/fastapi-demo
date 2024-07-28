@@ -1,8 +1,8 @@
 from dbutils.pooled_db import PooledDB
 import pymysql
 
-from app.util.config import ConfigManager
-from app.util.logger import LoggerManager
+from app.manager.config import ConfigManager
+from app.manager.logger import LoggerManager
 
 class DBManager:
     _db_instance = None

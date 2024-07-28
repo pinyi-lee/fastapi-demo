@@ -1,9 +1,9 @@
 import pymysql
 
-from app.database.db import DBManager
+from app.manager.db import DBManager
 from app.model.attraction import Attraction, AttractionListRes
 from app.model.error import ServiceError, AttractionNotFoundError, DBError
-from app.util.logger import LoggerManager
+from app.manager.logger import LoggerManager
 
 def get_attraction_list(page: int, keyword: str = None) -> AttractionListRes | ServiceError:
     connection = None

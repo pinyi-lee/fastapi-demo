@@ -4,7 +4,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response, PlainTextResponse
 
-from app.util.config import ConfigManager
+from app.manager.config import ConfigManager
 
 class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self , request , call_next):

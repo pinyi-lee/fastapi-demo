@@ -4,12 +4,12 @@ from contextlib import asynccontextmanager
 
 from app.service.attraction import router as attraction_router
 from app.service.mrt import router as mrts_router
-from app.util.config import ConfigManager
-from app.util.logger import LoggerManager
-from app.database.db import DBManager
-from app.service.cache import RedisManager
-from app.service.scheduler import SchedulerManager
-from app.util.logger import LoggingMiddleware
+from app.manager.config import ConfigManager
+from app.manager.logger import LoggerManager
+from app.manager.db import DBManager
+from app.manager.cache import RedisManager
+from app.manager.scheduler import SchedulerManager
+from app.manager.logger import LoggingMiddleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):    
