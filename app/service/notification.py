@@ -59,7 +59,7 @@ async def publish(user_id: str, request: PublishRequest):
         LoggerManager.error(f"publish message error, error message:{e}")
         return bindResponse(InternalServerError())
 
-@router.get("/notification", response_class=HTMLResponse)
+@router.get("/page/notification", response_class=HTMLResponse)
 def get_upload_page():
     with open("app/static/notification.html", "r") as file:
         return HTMLResponse(content=file.read(), status_code=200)

@@ -27,7 +27,7 @@ def generate_presigned_url() -> PresignedUrlRes | ServiceError:
         return bindResponse(InternalServerError())
     
 
-@router.get("/post", response_class=HTMLResponse)
+@router.get("/page/post", response_class=HTMLResponse)
 def get_upload_page():
     with open("app/static/post.html", "r") as file:
         return HTMLResponse(content=file.read(), status_code=200)
