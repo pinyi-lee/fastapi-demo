@@ -5,6 +5,7 @@ from app.service.attraction import router as attraction_router
 from app.service.mrt import router as mrts_router
 from app.service.post import router as post_router
 from app.service.notification import router as notification_router
+from app.service.default import router as default_router
 from app.manager.config import ConfigManager
 from app.manager.logger import LoggerManager
 from app.manager.db import DBManager
@@ -40,3 +41,4 @@ app.include_router(attraction_router, tags=["Attraction"])
 app.include_router(mrts_router, tags=["MRT Station"])
 app.include_router(post_router, tags=["Post"])
 app.include_router(notification_router, tags=["Notification"])
+app.include_router(default_router, tags=["Default"])
