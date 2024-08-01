@@ -10,7 +10,7 @@ router = APIRouter()
 @router.get('/api/version',
             summary = "get version",
             description= "get version")
-async def notification_sse(user_id: str):
+async def get_version():
     try:
          return JSONResponse(
             status_code = status.HTTP_200_OK,
