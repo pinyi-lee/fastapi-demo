@@ -3,7 +3,6 @@ from fastapi.responses import JSONResponse, HTMLResponse
 from sse_starlette.sse import EventSourceResponse
 import asyncio
 import async_timeout
-import aioredis
 
 from app.service.service import bindResponse
 from app.model.error import InternalServerError

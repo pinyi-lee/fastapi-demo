@@ -1,5 +1,6 @@
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
+import asyncio
 
 from app.service.service import bindResponse
 from app.model.error import InternalServerError
@@ -20,3 +21,8 @@ async def get_version():
     except Exception as e:
         LoggerManager.error(f"get version error, error message:{e}")
         return bindResponse(InternalServerError())
+    
+@router.get("/api/timeout")
+async def example_endpoint():
+    await asyncio.sleep(20)
+    return {"message": "This should timeout"}

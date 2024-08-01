@@ -1,5 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from contextlib import asynccontextmanager
+from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
+import asyncio
 
 from app.service.attraction import router as attraction_router
 from app.service.mrt import router as mrts_router
@@ -35,7 +38,19 @@ async def lifespan(app: FastAPI):
     SchedulerManager.close_scheduler()
     s3Manager.close_s3()
 
+class TimeoutMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, timeout=15):
+        super().__init__(app)
+        self.timeout = timeout
+
+    async def dispatch(self, request: Request, call_next):
+        try:
+            return await asyncio.wait_for(call_next(request), timeout=self.timeout)
+        except asyncio.TimeoutError:
+            return JSONResponse(status_code=408, content={"message": "Request timed out"})
+        
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(TimeoutMiddleware, timeout=15.0)
 app.add_middleware(LoggingMiddleware)
 app.include_router(attraction_router, tags=["Attraction"])
 app.include_router(mrts_router, tags=["MRT Station"])
