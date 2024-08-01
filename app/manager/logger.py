@@ -28,6 +28,8 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             LoggerManager.info(f'{short_id} Response body: {response_text}')
 
             return PlainTextResponse(content=response_text, status_code=response.status_code, headers=dict(response.headers))
+        
+        LoggerManager.info(f'Request from IP: {request.client.host} to URL: {request.url.path}')
         return await call_next(request)
 
 
