@@ -4,6 +4,8 @@ from pydantic import Field
 class Settings(BaseSettings):
     logger_level: str = Field(..., json_schema_extra={"env": "LOGGER_LEVEL"})
     logger_path: str = Field(..., json_schema_extra={"env": ":LOGGER_PATH"})
+    logger_cron_level: str = Field(..., json_schema_extra={"env": "LOGGER_CRON_LEVEL"})
+    logger_cron_path: str = Field(..., json_schema_extra={"env": ":LOGGER_CRON_PATH"})
     scheduler_interval_seconds: int = Field(..., json_schema_extra={"env": ":SCHEDULER_INTERVAL_SECONDS"})
     database_name: str = Field(..., json_schema_extra={"env": "DATABASE_NAME"})
     database_user: str = Field(..., json_schema_extra={"env": "DATABASE_USER"})

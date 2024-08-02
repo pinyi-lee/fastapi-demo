@@ -22,7 +22,7 @@ Set up and run the FastAPI service in your local environment.
 - uvicorn app.main:app --reload
 
 #### test
-- http://localhost:8000/docs
+- http://localhost:8000/api/version
 
 ---
 ## Docker Run
@@ -42,7 +42,7 @@ Use Docker to build and run FastAPI services.
 - make stop
 
 #### test
-- http://localhost:80/docs
+- http://localhost:80/api/version
 
 ---
 ## VENV

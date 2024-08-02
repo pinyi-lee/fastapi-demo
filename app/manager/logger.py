@@ -39,26 +39,38 @@ class LoggerManager:
 
     @classmethod
     def init_logger(cls) -> None:
-        logger_level = cls.get_logger_level(ConfigManager.get_config().logger_level)
-
-        file_handler = logging.FileHandler(ConfigManager.get_config().logger_path)
-        file_handler.setLevel(logger_level)
-        
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logger_level)
-        
-        formatter = logging.Formatter(fmt='%(asctime)s - %(message)s')
-        file_handler.setFormatter(formatter)
-        console_handler.setFormatter(formatter)
         
         if cls._logging_instance is None:
+            logger_level = cls.get_logger_level(ConfigManager.get_config().logger_level)
+
+            file_handler = logging.FileHandler(ConfigManager.get_config().logger_path)
+            file_handler.setLevel(logger_level)
+            
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(logger_level)
+            
+            formatter = logging.Formatter(fmt='%(asctime)s - %(message)s')
+            file_handler.setFormatter(formatter)
+            console_handler.setFormatter(formatter)
+
             cls._logging_instance = logging.getLogger()
             cls._logging_instance.setLevel(logger_level)
-            
             cls._logging_instance.addHandler(file_handler)
             cls._logging_instance.addHandler(console_handler)
 
         if cls._scheduler_logging_instance is None:
+            logger_level = cls.get_logger_level(ConfigManager.get_config().logger_cron_level)
+
+            file_handler = logging.FileHandler(ConfigManager.get_config().logger_cron_path)
+            file_handler.setLevel(logger_level)
+            
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(logger_level)
+            
+            formatter = logging.Formatter(fmt='%(asctime)s - %(message)s')
+            file_handler.setFormatter(formatter)
+            console_handler.setFormatter(formatter)
+
             cls._scheduler_logging_instance = logging.getLogger('apscheduler')
             cls._scheduler_logging_instance.setLevel(logger_level)
             cls._scheduler_logging_instance.addHandler(file_handler)

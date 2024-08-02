@@ -20,7 +20,8 @@ class DBManager:
                                         host = ConfigManager.get_config().database_host,
                                         port = ConfigManager.get_config().database_port
                                     )
-            cls._db_instance.connection()
+            connetion = cls._db_instance.connection()
+            connetion.close()
         except Exception as e:
                 raise RuntimeError(f"Init DB Fail, Error: {e}")
     

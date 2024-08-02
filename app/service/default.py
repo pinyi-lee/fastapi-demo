@@ -24,5 +24,5 @@ async def get_version():
     
 @router.get("/api/timeout")
 async def example_endpoint():
-    await asyncio.sleep(20)
+    await asyncio.sleep(10)
     return {"message": "This should timeout"}
