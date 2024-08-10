@@ -11,7 +11,7 @@ class SchedulerManager:
     def init_scheduler(cls) -> None:
         try:
             if cls._scheduler_instance is None:
-                cls._scheduler_instance = BackgroundScheduler()
+                cls._scheduler_instance = BackgroundScheduler(option={'logger': LoggerManager.get_scheduler_logging_instance()})
                 cls._scheduler_instance.start()
                 cls._scheduler_instance.add_job(my_scheduled_job, IntervalTrigger(seconds=ConfigManager.get_config().scheduler_interval_seconds))
         except Exception as e:
@@ -23,4 +23,4 @@ class SchedulerManager:
             cls._scheduler_instance.shutdown()
 
 def my_scheduled_job():
-    LoggerManager.error("This job is run.")
+    LoggerManager.get_scheduler_logging_instance().info("This job is run.")

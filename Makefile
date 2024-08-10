@@ -1,7 +1,12 @@
-docker:
+build_fastapi:
 	@rm -f build/Dockerfile
 	@cp build/Dockerfile.temp build/Dockerfile
 	@docker build -t fastapi_service -f build/Dockerfile .
+
+build_fluentd:
+	@rm -f build/fluentd/Dockerfile
+	@cp build/fluentd/Dockerfile.temp build/fluentd/Dockerfile
+	@docker build -t fluentd_service -f build/fluentd/Dockerfile .
 
 init_db:
 	@python3 script/init-schema.py

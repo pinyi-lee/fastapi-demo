@@ -14,6 +14,8 @@ services:
       retries: 5
       start_period: 30s
       timeout: 5s
+    networks:
+      - my-network
 
   mysql:
     image: mysql:latest
@@ -27,14 +29,16 @@ services:
       MYSQL_PASSWORD: test
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "--silent"]
       interval: 30s
       retries: 5
       start_period: 30s
       timeout: 5s
-
+    networks:
+      - my-network
+      
   fastapi_service:
     image: fastapi_service
     container_name: fastapi_service
@@ -54,6 +58,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - my-network
 
   nginx:
     image: nginx:latest
@@ -61,11 +67,83 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./cloudfront_ranges.conf:/etc/nginx/cloudfront_ranges.conf
+      - nginx_data:/var/log/nginx
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/default.conf:/etc/nginx/default.conf
+      - ./nginx/cloudfront_ranges.conf:/etc/nginx/cloudfront_ranges.conf
     depends_on:
       - fastapi_service
+      - fluentd_service
+
+    networks:
+      - my-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ELASTIC_PASSWORD=changeme
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=1s"]
+      interval: 30s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+    networks:
+      - my-network
+
+  fluentd_service:
+    image: fluentd_service
+    container_name: fluentd_service
+    ports:
+      - "9880:9880"
+      - "5141:5141"
+      - "5141:5141/udp"
+      - "5142:5142"
+      - "5142:5142/udp"
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - fluentd_data:/fluentd/log
+      - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - my-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.0
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - my-network
 
 volumes:
+  nginx_data:
   redis_data:
   mysql_data:
+  es_data:
+  fluentd_data:
+
+networks:
+  my-network:
+    driver: bridge

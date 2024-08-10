@@ -1,5 +1,6 @@
 import logging
 import uuid
+from fluent import handler as fluent_handler
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response, PlainTextResponse
@@ -49,14 +50,22 @@ class LoggerManager:
             console_handler = logging.StreamHandler()
             console_handler.setLevel(logger_level)
             
+            fluentd_handler = fluent_handler.FluentHandler('myapp.app', host='fluentd_service', port=24224)
+            fluent_formatter = fluent_handler.FluentRecordFormatter({
+            'level': '%(levelname)s',
+            'message': '%(message)s'
+            })
+            fluentd_handler.setFormatter(fluent_formatter)
+
             formatter = logging.Formatter(fmt='%(asctime)s - %(message)s')
             file_handler.setFormatter(formatter)
             console_handler.setFormatter(formatter)
 
-            cls._logging_instance = logging.getLogger()
+            cls._logging_instance = logging.getLogger('app')
             cls._logging_instance.setLevel(logger_level)
             cls._logging_instance.addHandler(file_handler)
             cls._logging_instance.addHandler(console_handler)
+            cls._logging_instance.addHandler(fluentd_handler)
 
         if cls._scheduler_logging_instance is None:
             logger_level = cls.get_logger_level(ConfigManager.get_config().logger_cron_level)
@@ -67,6 +76,13 @@ class LoggerManager:
             console_handler = logging.StreamHandler()
             console_handler.setLevel(logger_level)
             
+            fluentd_handler = fluent_handler.FluentHandler('myapp.scheduler', host='fluentd_service', port=24224)
+            fluent_formatter = fluent_handler.FluentRecordFormatter({
+            'level': '%(levelname)s',
+            'message': '%(message)s'
+            })
+            fluentd_handler.setFormatter(fluent_formatter)
+
             formatter = logging.Formatter(fmt='%(asctime)s - %(message)s')
             file_handler.setFormatter(formatter)
             console_handler.setFormatter(formatter)
@@ -75,6 +91,7 @@ class LoggerManager:
             cls._scheduler_logging_instance.setLevel(logger_level)
             cls._scheduler_logging_instance.addHandler(file_handler)
             cls._scheduler_logging_instance.addHandler(console_handler)
+            cls._scheduler_logging_instance.addHandler(fluentd_handler)
 
     @classmethod
     def get_logger_level(cls, level: str) -> int:
@@ -103,10 +120,14 @@ class LoggerManager:
     @classmethod
     def error(cls, log: str) -> None:
         cls._logging_instance.error(log)
+
+    @classmethod
+    def get_scheduler_logging_instance(cls) -> logging.Logger:
+        return cls._scheduler_logging_instance
     
     @classmethod
     def close_logger(cls) -> None:
-        if cls._scheduler_logging_instance is not None:
+        if cls._logging_instance is not None:
             cls._logging_instance = None
         if cls._scheduler_logging_instance is not None:
-            cls._logging_instance = None
+            cls._scheduler_logging_instance = None
