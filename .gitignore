@@ -7,6 +7,7 @@
 
 # Ignore Dockerfile
 /build/Dockerfile
+/build/fluentd/Dockerfile
 
 /app/app.log
 /app/cron.log
