@@ -83,10 +83,10 @@ services:
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
       - ELASTIC_PASSWORD=changeme
       - xpack.security.enabled=false
-      - bootstrap.memory_lock=true
+      - bootstrap.memory_lock=false
     ulimits:
       memlock:
         soft: -1
